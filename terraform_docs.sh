@@ -20,17 +20,30 @@ done
 
 readonly tmp_file=$(mktemp)
 readonly text_file="README.md"
+markers_block='
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+'
 
 for path_uniq in $(echo "${paths[*]}" | tr ' ' '\n' | sort -u); do
   path_uniq="${path_uniq//__REPLACED__SPACE__/ }"
 
   pushd "$path_uniq" > /dev/null
 
-  if [[ ! -f "$text_file" ]]; then
-    popd > /dev/null
-    continue
+  ## Create README.md if it does not exist
+  if [[ ! -f "${text_file}" ]]; then
+    # TODO: improve with a base template
+    touch ${text_file}
+    echo "Creating ${path_uniq}/${text_file}, please git add."
   fi
 
+  ## Add markers if they don't exist
+  if [ $(grep "BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK" ${text_file} | wc -l) -eq 0 ]; then
+    echo "${markers_block}" >>${text_file}
+    echo "Updating ${path_uniq}/${text_file}, please git add."
+  fi
+
+  ## Generate docs and add to README.md
   terraform-docs md ./ > "$tmp_file"
 
   # Replace content between markers with the placeholder - https://stackoverflow.com/questions/1212799/how-do-i-extract-lines-between-two-line-delimiters-in-perl#1212834
