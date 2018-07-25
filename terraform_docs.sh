@@ -22,8 +22,7 @@ readonly tmp_file=$(mktemp)
 readonly text_file="README.md"
 markers_block='
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-'
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->'
 
 for path_uniq in $(echo "${paths[*]}" | tr ' ' '\n' | sort -u); do
   path_uniq="${path_uniq//__REPLACED__SPACE__/ }"
