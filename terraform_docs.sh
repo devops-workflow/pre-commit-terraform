@@ -39,7 +39,7 @@ for path_uniq in $(echo "${paths[*]}" | tr ' ' '\n' | sort -u); do
   fi
 
   ## Add markers if they don't exist
-  if [ $(grep "BEGINNING OF TERRAFORM-DOCS HOOK" ${text_file} | wc -l) -eq 0 ]; then
+  if [ $(grep "BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK" ${text_file} | wc -l) -eq 0 ]; then
     echo "${markers_block}" >>${text_file}
     echo "Updating ${path_uniq}/${text_file}, please git add."
     file_changed=1
