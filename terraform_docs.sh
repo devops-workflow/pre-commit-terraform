@@ -35,14 +35,12 @@ for path_uniq in $(echo "${paths[*]}" | tr ' ' '\n' | sort -u); do
     # TODO: improve with a base template
     touch ${text_file}
     echo "Creating ${path_uniq}/${text_file}, please git add."
-    file_changed=1
   fi
 
   ## Add markers if they don't exist
   if [ $(grep "BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK" ${text_file} | wc -l) -eq 0 ]; then
     echo "${markers_block}" >>${text_file}
     echo "Updating ${path_uniq}/${text_file}, please git add."
-    file_changed=1
   fi
 
   ## Generate docs and add to README.md
@@ -58,7 +56,3 @@ for path_uniq in $(echo "${paths[*]}" | tr ' ' '\n' | sort -u); do
 
   popd > /dev/null
 done
-
-#if [ "${file_changed}" == 1 ]; then
-#  exit 1
-#fi
