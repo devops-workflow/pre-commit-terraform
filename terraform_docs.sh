@@ -34,14 +34,14 @@ for path_uniq in $(echo "${paths[*]}" | tr ' ' '\n' | sort -u); do
   if [[ ! -f "${text_file}" ]]; then
     # TODO: improve with a base template
     touch ${text_file}
-    echo "Creating ${text_file}, please git add."
+    echo "Creating ${path_uniq}/${text_file}, please git add."
     file_changed=1
   fi
 
   ## Add markers if they don't exist
-  if grep -q -v "BEGINNING OF TERRAFORM-DOCS HOOK" ${text_file}; then
+  if [ $(grep "BEGINNING OF TERRAFORM-DOCS HOOK" ${text_file} | wc -l) -eq 0 ]; then
     echo "${markers_block}" >>${text_file}
-    echo "Updating ${text_file}, please git add."
+    echo "Updating ${path_uniq}/${text_file}, please git add."
     file_changed=1
   fi
 
