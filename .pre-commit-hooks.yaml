@@ -38,3 +38,12 @@
   files: (\.tf)$
   exclude: \.terraform\/.*$
   types: [terraform, text]
+
+- id: tflint
+  name: Terraform linting
+  description: TFLint is Terraform linter for detecting errors that can not be detected by `terraform plan` -  https://github.com/wata727/tflint
+  entry: tflint.sh
+  language: script
+  files: \.tf$
+  exclude: \.terraform\/.*$
+  types: [terraform, text]
