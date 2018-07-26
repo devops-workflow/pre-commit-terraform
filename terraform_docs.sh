@@ -4,6 +4,32 @@ set -e
 declare -a paths
 declare -a tfvars_files
 
+## If top of repo and not exist, add markdown lint config
+# FIX: VERIFY could be running from any directory
+FILE1=$1
+DIRECTORY=$(dirname "${FILE1}")
+
+if [ "${path_uniq}" == "" ]; then
+  if [ ! -f '.markdownlintrc' ]; then
+    cat <<MARKDOWNLINT > .markdownlintrc
+{
+"default": true,
+"MD013": { "code_blocks": false, "tables": false },
+}
+MARKDOWNLINT
+    md_config=1
+  fi
+  if [ ! -f '.mdlrc' ]; then
+    cat <<MDL > .mdlrc
+rules "~MD013"
+MDL
+    md_config=1
+  fi
+  if [ "${md_config}" -eq 1 ]; then
+    echo "Creating markdown lint config. please git add"
+  fi
+fi
+
 index=0
 
 for file_with_path in "$@"; do
