@@ -4,8 +4,10 @@ set -e
 declare -a paths
 declare -a tfvars_files
 
-index=0
+marker_start='<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->'
+marker_end='<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->'
 
+index=0
 for file_with_path in "$@"; do
   file_with_path="${file_with_path// /__REPLACED__SPACE__}"
 
@@ -20,9 +22,6 @@ done
 
 readonly tmp_file=$(mktemp)
 readonly text_file="README.md"
-markers_block='
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->'
 
 for path_uniq in $(echo "${paths[*]}" | tr ' ' '\n' | sort -u); do
   path_uniq="${path_uniq//__REPLACED__SPACE__/ }"
@@ -37,8 +36,12 @@ for path_uniq in $(echo "${paths[*]}" | tr ' ' '\n' | sort -u); do
   fi
 
   ## Add markers if they don't exist
-  if [ $(grep "BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK" ${text_file} | wc -l) -eq 0 ]; then
-    echo "${markers_block}" >>${text_file}
+  if [ $(grep "${marker_start}" ${text_file} | wc -l) -eq 0 ]; then
+    cat <<MARKER_BLOCK >>${text_file}
+
+${marker_start}
+${marker_end}
+MARKER_BLOCK
     echo "Updating ${path_uniq}/${text_file}, please git add."
   fi
 
