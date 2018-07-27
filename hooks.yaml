@@ -29,3 +29,12 @@
   language: script
   files: (\.tf|\.tfvars)$
   exclude: \.terraform\/.*$
+
+- id: terraform_tools
+  name: Terraform tools
+  description: Install and maintain tools needed for these hooks.
+  entry: tools.sh
+  language: script
+  files: (\.tf)$
+  exclude: \.terraform\/.*$
+  types: [terraform, text]
