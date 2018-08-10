@@ -4,9 +4,6 @@ set -e
 declare -a paths
 declare -a tfvars_files
 
-FILE1=$1
-DIRECTORY=$(dirname "${FILE1}")
-
 ### Configure markdown linters
 # This is so they don't complain about long lines from terraform-docs
 if [ ! -f '.markdownlintrc' ]; then
