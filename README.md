@@ -1,12 +1,18 @@
 # pre-commit-terraform hook
 
-[![Github tag](https://img.shields.io/github/tag/antonbabenko/pre-commit-terraform.svg)](https://github.com/antonbabenko/pre-commit-terraform/releases) ![](https://img.shields.io/maintenance/yes/2018.svg) [![Help Contribute to Open Source](https://www.codetriage.com/antonbabenko/pre-commit-terraform/badges/users.svg)](https://www.codetriage.com/antonbabenko/pre-commit-terraform)
+| Repo | Badges info |
+| ---- | ---- |
+| [This fork](https://github.com/devops-workflow/pre-commit-terraform) | [![Github release](https://img.shields.io/github/release/devops-workflow/pre-commit-terraform.svg)](https://github.com/devops-workflow/pre-commit-terraform/releases) |
+| [Upstream](https://github.com/antonbabenko/pre-commit-terraform) | [![Github tag](https://img.shields.io/github/tag/antonbabenko/pre-commit-terraform.svg)](https://github.com/antonbabenko/pre-commit-terraform/releases) ![](https://img.shields.io/maintenance/yes/2018.svg) [![Help Contribute to Open Source](https://www.codetriage.com/antonbabenko/pre-commit-terraform/badges/users.svg)](https://www.codetriage.com/antonbabenko/pre-commit-terraform) |
 
 Several [pre-commit](http://pre-commit.com/) hooks to keep Terraform configurations (both `*.tf` and `*.tfvars`) in a good shape:
+* `terraform_docs` - Inserts input and output documentation into `README.md`.
 * `terraform_fmt` - Rewrites all Terraform configuration files to a canonical format.
+* `terraform_graph` - Generates resource graph and inserts into `README.md`
+* `terraform_tools` - Install and update all tools required by hooks in this repo
 * `terraform_validate_no_variables` - Validates all Terraform configuration files without checking whether all required variables were set.
 * `terraform_validate_with_variables` - Validates all Terraform configuration files and checks whether all required variables were specified.
-* `terraform_docs` - Inserts input and output documentation into `README.md`.
+* `tflint` - Lint check Terraform files
 
 ## Notes about hooks
 
@@ -19,11 +25,15 @@ Several [pre-commit](http://pre-commit.com/) hooks to keep Terraform configurati
 `.pre-commit-config.yaml`:
 
 ```yaml
-- repo: git://github.com/antonbabenko/pre-commit-terraform
-  rev: v1.7.3
-  hooks:
-    - id: terraform_fmt
-    - id: terraform_docs
+repos:
+  - repo: https://github.com/devops-workflow/pre-commit-terraform
+    rev: v1.12.0
+    hooks:
+      - id: terraform_tools
+      - id: terraform_fmt
+      - id: terraform_docs
+      - id: terraform_graph
+      - id: tflint
 ```
 
 Enjoy the clean and documented code!
