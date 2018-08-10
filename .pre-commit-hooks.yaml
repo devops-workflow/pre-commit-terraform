@@ -14,6 +14,15 @@
   files: (\.tf)$
   exclude: \.terraform\/.*$
 
+- id: terraform_graph
+  name: Terraform graph
+  description: Generate Terraform resource graph and add to README
+  entry: terraform_graph.sh
+  language: script
+  files: (\.tf)$
+  exclude: \.terraform\/.*$
+  types: [terraform, text]
+
 - id: terraform_validate_no_variables
   name: Terraform validate without variables
   description: Validates all Terraform configuration files without checking whether all required variables were set (basic check).
