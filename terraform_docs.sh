@@ -4,6 +4,30 @@ set -e
 declare -a paths
 declare -a tfvars_files
 
+### Configure markdown linters
+# This is so they don't complain about long lines from terraform-docs
+if [ ! -f '.markdownlintrc' ]; then
+  cat <<MARKDOWNLINT > .markdownlintrc
+{
+"default": true,
+"MD013": { "code_blocks": false, "tables": false },
+}
+MARKDOWNLINT
+  md_config=1
+fi
+
+if [ ! -f '.mdlrc' ]; then
+  cat <<MDL > .mdlrc
+rules "~MD013"
+MDL
+  md_config=1
+fi
+
+if [ "${md_config}" -eq 1 ]; then
+  echo "Creating markdown lint configurations. please git add"
+fi
+
+### Terraform Docs
 index=0
 
 for file_with_path in "$@"; do
