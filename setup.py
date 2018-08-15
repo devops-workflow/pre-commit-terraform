@@ -24,13 +24,14 @@ setup(
     ],
 
     packages=find_packages(exclude=('tests*', 'testing*')),
-    #install_requires=[
+    install_requires=[
+        'requests',
     #    # quickfix to prevent pycodestyle conflicts
     #    'flake8!=2.5.3',
     #    'autopep8>=1.3',
     #    'pyyaml',
     #    'six',
-    #],
+    ],
     entry_points={
         'console_scripts': [
             'terraform_template = hooks.terraform_template:main',
