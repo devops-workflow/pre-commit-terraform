@@ -84,10 +84,10 @@ def get_args(argv=None):
     ARGS = namedtuple('ARGS', 'paths owner repo')
     parser = argparse.ArgumentParser(description='Terraform module templater', version=version)
     parser.add_argument('--owner',
-        help='Owner name for the repository',
+        help='Owner name for the Github repository',
     )
     parser.add_argument('--repo',
-        help='Repository name'
+        help='Github repository name'
     )
     parser.add_argument('--maintained_path',
         action='append', nargs='*', default=[],
