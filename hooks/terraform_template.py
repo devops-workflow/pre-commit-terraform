@@ -93,6 +93,10 @@ def get_args(argv=None):
         action='append', nargs='*', default=[],
         help='File paths to always make sure are current',
     )
+    parser.add_argument('filenames',
+        nargs='*',
+        help='Filenames pre-commit believes are changed.',
+    )
     args = parser.parse_args(argv)
     if debug:
         print('Args: {}'.format(args))
