@@ -9,6 +9,7 @@ Several [pre-commit](http://pre-commit.com/) hooks to keep Terraform configurati
 * `terraform_docs` - Inserts input and output documentation into `README.md`.
 * `terraform_fmt` - Rewrites all Terraform configuration files to a canonical format.
 * `terraform_graph` - Generates resource graph and inserts into `README.md`
+* `terraform_template` - Ensures that all files in template exist locally and maintained files are current
 * `terraform_tools` - Install and update all tools required by hooks in this repo
 * `terraform_validate_no_variables` - Validates all Terraform configuration files without checking whether all required variables were set.
 * `terraform_validate_with_variables` - Validates all Terraform configuration files and checks whether all required variables were specified.
@@ -27,9 +28,10 @@ Several [pre-commit](http://pre-commit.com/) hooks to keep Terraform configurati
 ```yaml
 repos:
   - repo: https://github.com/devops-workflow/pre-commit-terraform
-    rev: v1.12.0
+    rev: v1.13.0
     hooks:
       - id: terraform_tools
+      - id: terraform_template
       - id: terraform_fmt
       - id: terraform_docs
       - id: terraform_graph
