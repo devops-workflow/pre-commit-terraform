@@ -33,7 +33,7 @@ setup(
     #],
     entry_points={
         'console_scripts': [
-            'terraform-template = hooks.terraform_template:main',
+            'terraform_template = hooks.terraform_template:main',
         ],
     },
 )
