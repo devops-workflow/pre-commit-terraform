@@ -24,7 +24,7 @@
   types: [terraform, text]
 
 - id: terraform_template
-  name: Terraform Template
+  name: Terraform template
   description: Copies files from Terraform module template repo
   entry: terraform_template
   language: python
