@@ -3,9 +3,10 @@ Use github api v3 with Python
 https://pre-commit.com/#python
 Needs setup.py to be installed via pip install .
 '''
+# TODO: move request error handling to own function
 
+from collections import namedtuple
 from datetime import datetime
-from pprint import pprint
 import argparse
 import base64
 import errno
@@ -47,19 +48,17 @@ def get_repo_objects(owner, repo):
     params = { 'recursive' : '1' }
     r = requests.get(url, params=params)
     if r.status_code != requests.codes.ok:
+        # TODO:
+        #   403 due to rate, say so and what limit is with refresh time
+        #       'X-RateLimit-Remaining': '52'
+        #       'X-RateLimit-Reset': '1534365984'
+        #       'X-RateLimit-Limit': '60'
+        #   404 Not Found -> owner/repo doesn't exist or is not public
         print('ERROR: Failed to list github repository: {}/{}. Return HTTP code: {}\nHeader: {}'.format(owner, repo, r.status_code, r.headers))
         sys.exit()
-    # TODO: check for Last-Modified header. if older than maintained files, don't need to copy?
-    #       Not 100% but will help with rate limit
-    # Date         : Wed, 15 Aug 2018 02:22:24 GMT
-	# Last-Modified: Sat, 28 Jul 2018 16:41:24 GMT
     last_modified = datetime.strptime(r.headers['Last-Modified'], github_date_format)
-    date = datetime.strptime(r.headers['Date'], github_date_format)
-    # Date is time of request
-    print("\tNew Date: {}\n\tModified: {}".format(date.strftime('%c'), last_modified.strftime('%c')))
     objects = r.json()['tree']
-    return objects
-    #return last_modified, objects
+    return last_modified, objects
 
 def mkdir(path):
     '''
@@ -73,13 +72,16 @@ def mkdir(path):
                 raise
 
 def write_file(contents, path):
+    if debug:
+        print('Copying {}'.format(path))
     with open(path, "w") as file:
       file.write(contents)
       file.close()
 
-
-def main(argv=None):
-    # TODO: need force options: maintained, all
+def get_args(argv=None):
+    # TODO: need force options: copy maintained, copy all
+    ### Handle arguments
+    ARGS = namedtuple('ARGS', 'paths owner repo')
     parser = argparse.ArgumentParser(description='Terraform module templater', version=version)
     parser.add_argument('--owner',
         help='Owner name for the repository',
@@ -94,9 +96,6 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if debug:
         print('Args: {}'.format(args))
-        print('Owner: {}'.format(args.owner))
-        print('Repo: {}'.format(args.repo))
-        print('maintained_path: {}'.format(args.maintained_path))
     if args.maintained_path == []:
         paths = maintained_paths
     elif any(isinstance(i, list) for i in args.maintained_path):
@@ -112,27 +111,28 @@ def main(argv=None):
     if debug:
         print('Using paths: {}'.format(paths))
         print('Using repo: {}/{}'.format(owner, repo))
+    return ARGS(paths, owner, repo)
 
-
-    repo_objects = get_repo_objects(owner=owner, repo=repo)
-    # last_modified, repo_objects = get_repo_objects(owner=owner, repo=repo)
-    '''
+def main(argv=None):
+    args = get_args(argv)
+    ### Process github template repo and copy what is needed
+    (last_modified, repo_objects) = get_repo_objects(owner=args.owner, repo=args.repo)
     for object in repo_objects:
         if object['type'] == 'tree':
             mkdir(object['path'])
         if object['type'] != 'blob':
             continue
-        if object['path'] in paths:
+        if object['path'] in args.paths:
             # Copy maintained files
-            # Check repo date against file path
-            # t = os.path.getmtime(object['path'])
-            # file_time = datetime.fromtimestamp(t)
-            # t = os.stat(object['path']).st_mtime
-            # if file_time < last_modified:
-            write_file(get_file(object['url']), object['path'])
+            # Check repo date against file path.
+            # Copy if repo updated more recently
+            file_time = datetime.fromtimestamp(os.path.getmtime(object['path']))
+            if file_time < last_modified:
+                write_file(get_file(object['url']), object['path'])
         if not os.path.exists(object['path']):
             # Copy missing files
             write_file(get_file(object['url']), object['path'])
-    '''
+    return 0
+
 if __name__ == '__main__':
   exit(main())
