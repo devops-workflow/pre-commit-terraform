@@ -6,7 +6,7 @@ setup(
     name='pre_commit_terraform',
     description='Pre-commit hooks for Terraform modules',
     url='https://github.com/devops-workflow/pre-commit-terraform',
-    version='0.0.1,
+    version='0.0.1',
 
     author='Steven Nemetz',
     #author_email='',
