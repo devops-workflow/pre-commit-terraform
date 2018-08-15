@@ -3,7 +3,8 @@ Use github api v3 with Python
 https://pre-commit.com/#python
 Needs setup.py to be installed via pip install .
 '''
-# TODO: move request error handling to own function
+# TODO:
+#   move request error handling to own function
 
 from collections import namedtuple
 from datetime import datetime
@@ -72,8 +73,7 @@ def mkdir(path):
                 raise
 
 def write_file(contents, path):
-    if debug:
-        print('Copying {}'.format(path))
+    print('Creating/updating file {}'.format(path))
     with open(path, "w") as file:
       file.write(contents)
       file.close()
@@ -118,6 +118,7 @@ def get_args(argv=None):
     return ARGS(paths, owner, repo)
 
 def main(argv=None):
+    retval = 0
     args = get_args(argv)
     ### Process github template repo and copy what is needed
     (last_modified, repo_objects) = get_repo_objects(owner=args.owner, repo=args.repo)
@@ -133,10 +134,12 @@ def main(argv=None):
             file_time = datetime.fromtimestamp(os.path.getmtime(object['path']))
             if file_time < last_modified:
                 write_file(get_file(object['url']), object['path'])
+                retval = 1
         if not os.path.exists(object['path']):
             # Copy missing files
             write_file(get_file(object['url']), object['path'])
-    return 0
+            retval = 1
+    return retval
 
 if __name__ == '__main__':
   exit(main())
