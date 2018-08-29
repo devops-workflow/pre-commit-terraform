@@ -13,18 +13,18 @@ if [ ! -f '.markdownlintrc' ]; then
 "MD013": { "code_blocks": false, "tables": false },
 }
 MARKDOWNLINT
-  md_config=1
+  md_config="true"
 fi
 
 if [ ! -f '.mdlrc' ]; then
   cat <<MDL > .mdlrc
 rules "~MD013"
 MDL
-  md_config=1
+  md_config="true"
 fi
 
-if [ "${md_config}" -eq 1 ]; then
-  echo "Creating markdown lint configurations. please git add"
+if [ "${md_config}" == "true" ]; then
+  echo "Created markdown lint configurations. please git add"
 fi
 
 ### Terraform Docs
