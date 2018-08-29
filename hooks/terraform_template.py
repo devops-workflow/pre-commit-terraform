@@ -1,10 +1,11 @@
 '''
-Use github api v3 with Python
-https://pre-commit.com/#python
-Needs setup.py to be installed via pip install .
+Terraform template
+
+Copy files from Terraform module template repository
 '''
 # TODO:
 #   move request error handling to own function
+#   update .gitignore
 
 from collections import namedtuple
 from datetime import datetime
@@ -16,12 +17,12 @@ import os
 import requests
 import sys
 
-version = '0.0.1'
+version = '0.0.2'
 debug   = True
 # Parameter defaults
 repo_owner       = 'devops-workflow'
 repo_name        = 'terraform-template'
-maintained_paths = ['.circleci/config.yml', '.pre-commit-config.yaml']
+maintained_paths = ['.circleci/config.yml', '.gitignore', '.pre-commit-config.yaml']
 
 def get_file(url):
     '''
@@ -73,7 +74,7 @@ def mkdir(path):
                 raise
 
 def write_file(contents, path):
-    print('Creating/updating file {}'.format(path))
+    print('Creating/updating file: {}'.format(path))
     with open(path, "w") as file:
       file.write(contents)
       file.close()
@@ -127,18 +128,28 @@ def main(argv=None):
             mkdir(object['path'])
         if object['type'] != 'blob':
             continue
-        if object['path'] in args.paths:
-            # Copy maintained files
-            # Check repo date against file path.
-            # Copy if repo updated more recently
-            file_time = datetime.fromtimestamp(os.path.getmtime(object['path']))
-            if file_time < last_modified:
-                write_file(get_file(object['url']), object['path'])
-                retval = 1
         if not os.path.exists(object['path']):
             # Copy missing files
             write_file(get_file(object['url']), object['path'])
             retval = 1
+        if object['path'] in args.paths:
+            # Copy maintained files
+            # Check repo date against file path.
+            # Copy if repo updated more recently or size different
+            #   test
+            try:
+                file_time = datetime.fromtimestamp(os.path.getmtime(object['path']))
+                file_size = os.path.getsize(object['path'])
+                if file_time < last_modified or file_size != object['size']:
+                    write_file(get_file(object['url']), object['path'])
+            # File will exist, but could have access issue
+            #except IOError:
+            #    # v2.7 IOError, OSError
+            #    # v3 FileNotFoundError
+            #    write_file(get_file(object['url']), object['path'])
+            #    retval = 1
+            except:
+                print('Unknown error with {}.format(object['path']))')
     return retval
 
 if __name__ == '__main__':
