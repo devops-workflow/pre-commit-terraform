@@ -17,8 +17,8 @@ import os
 import requests
 import sys
 
-version = '0.0.2'
-debug   = True
+version = '0.0.3'
+debug   = False
 # Parameter defaults
 repo_owner       = 'devops-workflow'
 repo_name        = 'terraform-template'
@@ -142,12 +142,11 @@ def main(argv=None):
                 file_size = os.path.getsize(object['path'])
                 if file_time < last_modified or file_size != object['size']:
                     write_file(get_file(object['url']), object['path'])
+                    retval = 1
             # File will exist, but could have access issue
             #except IOError:
             #    # v2.7 IOError, OSError
             #    # v3 FileNotFoundError
-            #    write_file(get_file(object['url']), object['path'])
-            #    retval = 1
             except:
                 print('Unknown error with {}'.format(object['path']))
     return retval
