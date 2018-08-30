@@ -149,7 +149,7 @@ def main(argv=None):
             #    write_file(get_file(object['url']), object['path'])
             #    retval = 1
             except:
-                print('Unknown error with {}.format(object['path']))')
+                print('Unknown error with {}'.format(object['path']))
     return retval
 
 if __name__ == '__main__':
