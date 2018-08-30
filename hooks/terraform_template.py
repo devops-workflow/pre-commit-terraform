@@ -141,6 +141,8 @@ def main(argv=None):
                 file_time = datetime.fromtimestamp(os.path.getmtime(object['path']))
                 file_size = os.path.getsize(object['path'])
                 if file_time < last_modified or file_size != object['size']:
+                    print('Time: file: {}  < repo: {}'.format(file_time, last_modified))
+                    print('Size: file: {} != repo: {}'.format(file_size, object['size']))
                     write_file(get_file(object['url']), object['path'])
                     retval = 1
             # File will exist, but could have access issue
