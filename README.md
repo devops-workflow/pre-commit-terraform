@@ -7,13 +7,18 @@
 
 Several [pre-commit](http://pre-commit.com/) hooks to keep Terraform configurations (both `*.tf` and `*.tfvars`) in a good shape:
 * `terraform_docs` - Inserts input and output documentation into `README.md`.
-* `terraform_fmt` - Rewrites all Terraform configuration files to a canonical format.
+* `terraform_fmt` - Rewrites all Terraform configuration files to a canonical
+  format.
 * `terraform_graph` - Generates resource graph and inserts into `README.md`
-* `terraform_template` - Ensures that all files in template exist locally and maintained files are current
+* `terraform_template` - Ensures that all files in template exist locally
+  and maintained files are current
 * `terraform_tools` - Install and update all tools required by hooks in this repo
-* `terraform_validate_no_variables` - Validates all Terraform configuration files without checking whether all required variables were set.
-* `terraform_validate_with_variables` - Validates all Terraform configuration files and checks whether all required variables were specified.
-* `tflint` - Lint check Terraform files
+* `terraform_validate_no_variables` - Validates all Terraform configuration
+  files without checking whether all required variables were set.
+* `terraform_validate_with_variables` - Validates all Terraform configuration
+  files and checks whether all required variables were specified.
+* `tflint` - Lint check Terraform files. Configures tflint for terraform
+  version and to ignore all modules (due to tflint not handling registry format)
 
 ## Notes about hooks
 
