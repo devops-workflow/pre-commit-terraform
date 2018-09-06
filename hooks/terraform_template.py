@@ -134,11 +134,10 @@ def main(argv=None):
             retval = 1
         if object['path'] in args.paths:
             # Copy maintained files
-            # Check repo date against file path.
+            # Check repo date (UTC) against file path.
             # Copy if repo updated more recently or size different
-            #   test
             try:
-                file_time = datetime.fromtimestamp(os.path.getmtime(object['path']))
+                file_time = datetime.utcfromtimestamp(os.path.getmtime(object['path']))
                 file_size = os.path.getsize(object['path'])
                 if file_time < last_modified or file_size != object['size']:
                     print('Time: file: {}  < repo: {}'.format(file_time, last_modified))
